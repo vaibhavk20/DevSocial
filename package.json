@@ -1,0 +1,21 @@
+{
+    "name": "devcommunity",
+    "version": "1.0.0",
+    "description": "Dev social media",
+    "keywords": [
+        "NodeJS",
+        "ExpressJS",
+        "MongoDB"
+    ],
+    "license": "ISC",
+    "author": "Vaibhav Kale",
+    "type": "commonjs",
+    "main": "index.js",
+    "scripts": {
+        "start": "node src/app.js",
+        "dev": "nodemon src/app.js"
+    },
+    "dependencies": {
+        "express": "^5.1.0"
+    }
+}
