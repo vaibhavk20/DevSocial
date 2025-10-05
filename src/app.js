@@ -10,7 +10,11 @@ app.get("/admin/login", (req, res) => {
 });
 
 app.get("/admin/getAlldata", adminAuth, (req, res) => {
-    res.status(200).send("login sucessfull");
+    try {
+        res.status(200).send("login sucessfull");
+    } catch (error) {
+        console.log("fail to fetch the all data");
+    }
 });
 app.get("/admin/login", (req, res) => {
     res.status(200).send("login sucessfull");
@@ -31,8 +35,10 @@ app.get(
         next();
     }
 );
-app.use("/", (req, res) => {
-    res.send("home page");
+app.use("/", (err, req, res) => {
+    if (err) {
+        res.status(500).send("something went wrong!");
+    }
 });
 
 app.listen(3000, () => {
