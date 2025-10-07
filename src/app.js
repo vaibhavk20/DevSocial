@@ -6,6 +6,8 @@ const connectDB = require("./config/db");
 const { adminAuth } = require("./middleware/adminAuth");
 const User = require("./models/user");
 
+app.use(express.json()); // Middleware to parse JSON bodies to JS objects
+
 app.post("/signup", async (req, res) => {
     // create user
     const user = new User({
@@ -19,6 +21,38 @@ app.post("/signup", async (req, res) => {
     res.status(201).json({ message: "User created", user });
 });
 
+app.get("/user", async (req, res) => {
+    try {
+        const userEmail = req.body.emailId;
+
+        const user = await User.findOne({ emailId: userEmail });
+        res.status(200).json({ message: "User fetched", user });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: "Server error" });
+    }
+});
+
+app.get("/feed", async (req, res) => {
+    try {
+        const users = await User.find({});
+        res.status(200).json({ message: "Users fetched", users });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: "Server error" });
+    }
+});
+
+app.delete("/user", async (req, res) => {
+    try {
+        const userID = req.body.userId;
+        await User.findByIdAndDelete({ _id: userID });
+        res.status(200).json({ message: "User deleted" });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: "Server error" });
+    }
+});
 connectDB()
     .then(() => {
         console.log("DB connected");
