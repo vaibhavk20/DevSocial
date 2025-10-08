@@ -5,6 +5,7 @@ const connectDB = require("./config/db");
 
 const { adminAuth } = require("./middleware/adminAuth");
 const User = require("./models/user");
+const e = require("express");
 
 app.use(express.json()); // Middleware to parse JSON bodies to JS objects
 
@@ -40,6 +41,41 @@ app.get("/feed", async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: "Server error" });
+    }
+});
+
+app.patch("/user/:userId", async (req, res) => {
+    try {
+        const userID = req.params?.userId;
+        const data = req.body;
+
+        const allowedUpdates = [
+            "firstName",
+            "lastName",
+            "password",
+            "age",
+            "skills",
+        ];
+
+        const requestedUpdates = Object.keys(data).every((key) =>
+            allowedUpdates.includes(key)
+        );
+
+        if (!requestedUpdates) {
+            return res.status(400).json({ message: "Invalid updates!" });
+        }
+
+        const user = await User.findByIdAndUpdate({ _id: userID }, data, {
+            returnDocument: "after",
+            runValidators: true,
+        });
+
+        res.status(200).json({ message: "User updated.", user });
+    } catch (error) {
+        console.log(error);
+        return res
+            .status(500)
+            .json({ message: "Server error" + error.message });
     }
 });
 
