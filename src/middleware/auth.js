@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
+const User = require("../models/user");
 
-const auth = (req, res, next) => {
+const auth = async (req, res, next) => {
     try {
         // read token from cookies
         let token = req.cookies?.token;
@@ -9,8 +10,16 @@ const auth = (req, res, next) => {
         }
         const decoded = jwt.verify(token, "vabhavkale"); // ;
 
-        console.log(decoded);
-        req.user = decoded;
+        // console.log(decoded);
+        // req.user = decoded;
+
+        const { _id } = decoded;
+        const user = await User.findById(_id);
+        if (!user) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+        req.user = user;
+
         next();
     } catch (error) {
         return res.status(401).json({ message: "Unauthorized" });

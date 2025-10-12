@@ -1,7 +1,7 @@
 const validator = require("validator");
 
 const validateSignupData = (req) => {
-    const { firstName, lastName, email, password } = req.body;
+    const { firstName, lastName, emailId, password } = req.body;
 
     if (
         !firstName ||
@@ -17,8 +17,7 @@ const validateSignupData = (req) => {
     ) {
         throw new Error("Last name must be between 3 and 30 characters");
     }
-
-    if (!email || !validator.isEmail(email)) {
+    if (!emailId || !validator.isEmail(emailId)) {
         throw new Error("Email is invalid");
     }
 
@@ -26,4 +25,48 @@ const validateSignupData = (req) => {
         throw new Error("Password is not strong enough");
     }
 };
-module.exports = { validateSignupData };
+
+const validateEditProfileData = (req) => {
+    const data = req.body;
+
+    const allowedUpdates = [
+        "firstName",
+        "lastName",
+        "age",
+        "skills",
+        "photoUrl",
+        "about",
+    ];
+
+    const requestedUpdates = Object.keys(data).every((key) =>
+        allowedUpdates.includes(key)
+    );
+
+    if (!requestedUpdates) {
+        throw new Error("Invalid Edit!");
+    }
+};
+
+const validateForgetPasswordData = (req) => {
+    const data = req.body;
+
+    const allowedUpdates = ["password"];
+
+    const requestedUpdates = Object.keys(data).every((key) =>
+        allowedUpdates.includes(key)
+    );
+
+    if (!requestedUpdates) {
+        throw new Error("Invalid Edit!");
+    }
+
+    if (!data.password || !validator.isStrongPassword(data.password)) {
+        throw new Error("Password is not strong enough");
+    }
+};
+
+module.exports = {
+    validateSignupData,
+    validateEditProfileData,
+    validateForgetPasswordData,
+};
