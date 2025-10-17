@@ -13,6 +13,7 @@ const { auth } = require("./middleware/auth");
 const { authRouter } = require("./router/auth.router");
 const { profileRouter } = require("./router/profile.router");
 const { requestRouter } = require("./router/request.router");
+const { userRouter } = require("./router/user.router");
 
 app.use(express.json()); // Middleware to parse JSON bodies to JS objects
 app.use(cookieParser());
@@ -20,16 +21,17 @@ app.use(cookieParser());
 app.use("/", authRouter);
 app.use("/user", profileRouter);
 app.use("/", requestRouter);
+app.use("/", userRouter);
 
-app.get("/feed", async (req, res) => {
-    try {
-        const users = await User.find({});
-        res.status(200).json({ message: "Users fetched", users });
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({ message: "Server error" });
-    }
-});
+// app.get("/feed", async (req, res) => {
+//     try {
+//         const users = await User.find({});
+//         res.status(200).json({ message: "Users fetched", data: users });
+//     } catch (error) {
+//         console.log(error);
+//         return res.status(500).json({ message: "Server error" });
+//     }
+// });
 
 connectDB()
     .then(() => {

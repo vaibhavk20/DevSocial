@@ -18,6 +18,7 @@ const userSchema = new mongoose.Schema(
             type: String,
             lowercase: true,
             required: true,
+            index: true,
             unique: true,
             trim: true,
             validate(value) {
@@ -41,11 +42,9 @@ const userSchema = new mongoose.Schema(
         },
         gender: {
             type: String,
-            enum: ["Male", "Female", "Other"],
-            validate(value) {
-                if (!["Male", "Female", "Other"].includes(value)) {
-                    throw new Error("Gender must be Male,Female or Other");
-                }
+            enum: {
+                values: ["Male", "Female", "Other"],
+                message: "{VALUE} is not supported",
             },
         },
         photoUrl: {
@@ -73,6 +72,8 @@ const userSchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
+
+// userSchema.index({ emailId: 1 }); // for faster search
 
 userSchema.methods.getJWT = async function () {
     const user = this;

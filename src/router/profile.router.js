@@ -1,22 +1,15 @@
 const Router = require("express").Router();
 const profileRouter = Router;
 const User = require("../models/user");
-const { auth } = require("../middleware/auth");
+const { userAuth } = require("../middleware/auth");
 const {
     validateEditProfileData,
     validateForgetPasswordData,
 } = require("../utils/validation");
 const { encryptedPassword } = require("../utils/encryption");
 
-profileRouter.get("/profile/view", auth, async (req, res) => {
+profileRouter.get("/profile/view", userAuth, async (req, res) => {
     try {
-        // const decoded = req.user;
-
-        // const user = await User.findById({ _id: decoded._id });
-        // if (!user) {
-        //     return res.status(401).json({ message: "Unauthorized user" });
-        // }
-
         const user = req.user;
 
         res.status(200).json({ message: "User fetched", user });
@@ -26,7 +19,7 @@ profileRouter.get("/profile/view", auth, async (req, res) => {
     }
 });
 
-profileRouter.patch("/profile/edit", auth, async (req, res) => {
+profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
     try {
         const userID = req.user._id;
 
@@ -50,7 +43,7 @@ profileRouter.patch("/profile/edit", auth, async (req, res) => {
     }
 });
 
-profileRouter.patch("/profile/password", auth, async (req, res) => {
+profileRouter.patch("/profile/password", userAuth, async (req, res) => {
     try {
         validateForgetPasswordData(req);
         const { password } = req.body;
@@ -60,15 +53,6 @@ profileRouter.patch("/profile/password", auth, async (req, res) => {
         const loggedInUser = req.user;
         loggedInUser["password"] = passwordHash;
         await loggedInUser.save();
-
-        // const user = await User.findByIdAndUpdate(
-        //     { _id: userID },
-        //     data.password,
-        //     {
-        //         returnDocument: "after",
-        //         runValidators: true,
-        //     }
-        // );
 
         res.status(200).json({ message: "User updated.", data: loggedInUser });
     } catch (error) {

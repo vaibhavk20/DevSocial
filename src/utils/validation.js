@@ -65,8 +65,17 @@ const validateForgetPasswordData = (req) => {
     }
 };
 
+const validateConnectionStatus = (status) => {
+    const allowedStatus = ["ignored", "interested"];
+
+    if (!allowedStatus.includes(status)) {
+        throw new Error("Invalid status");
+    }
+};
+
 module.exports = {
     validateSignupData,
     validateEditProfileData,
     validateForgetPasswordData,
+    validateConnectionStatus,
 };
