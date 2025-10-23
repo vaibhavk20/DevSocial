@@ -7,28 +7,29 @@ const User = require("../models/user");
 USER_SAFE_DATA = [
     "firstName",
     "lastName",
-    "photoURL",
+    "emailId",
+    "photoUrl",
     "about",
     "age",
     "gender",
+    "skill",
 ];
 
-userRouter.get("/user/requests", userAuth, async (req, res) => {
+// const USER_SAFE_DATA = "firstName lastName photoURL about age gender";
+
+userRouter.get("/user/requests/recieved", userAuth, async (req, res) => {
     try {
-        const loggedInUserId = req.user._id;
-
+        const loggedInUser = req.user;
         const connectionRequests = await ConnectionRequest.find({
-            _id: loggedInUserId,
+            toUserId: loggedInUser._id,
             status: "interested",
-        }).populate("formUserId", ["fistName", "lastName"]);
-        // if (!connectionRequests) {
-        //     return res.status(401).json({ message: "" });
-        // }
-
-        res.status(200).json({
-            message: "Connection requests fetched",
-            connectionRequests,
-        });
+        }).populate("fromUserId", USER_SAFE_DATA);
+        if (connectionRequests) {
+            return res.status(200).json({
+                message: "Connection requests fetched",
+                data: connectionRequests,
+            });
+        }
     } catch (error) {
         console.log(error);
         return res
@@ -60,7 +61,7 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
             return connection.fromUserId;
         });
 
-        res.status(200).json({ message: "Connections fetched", connections });
+        res.status(200).json({ message: "Connections fetched", data });
     } catch (error) {
         console.log(error);
         return res
@@ -91,7 +92,7 @@ userRouter.get("/feed", userAuth, async (req, res) => {
 
         const connectionRequests = await ConnectionRequest.find({
             $or: [{ fromUserId: loggedInUserId }, { toUserId: loggedInUserId }],
-        }).select("fromUserId toUserId ");
+        }).select("fromUserId toUserId");
 
         // const excludedUserIds = connectionRequests.reduce((acc, curr) => {
         //     acc.push(curr.fromUserId);
@@ -150,7 +151,7 @@ userRouter.get("/feed", userAuth, async (req, res) => {
         //     return res.status(401).json({ message: "No users found" });
         // }
 
-        res.status(200).json({ message: "Users fetched", data: users });
+        res.status(200).json({ message: "Users fetched", feed: users });
     } catch (error) {
         console.log(error);
         return res

@@ -1,7 +1,7 @@
 const validator = require("validator");
 
 const validateSignupData = (req) => {
-    const { firstName, lastName, emailId, password } = req.body;
+    const { firstName, lastName, emailId, password, age } = req.body;
 
     if (
         !firstName ||
@@ -33,6 +33,7 @@ const validateEditProfileData = (req) => {
         "firstName",
         "lastName",
         "age",
+        "gender",
         "skills",
         "photoUrl",
         "about",

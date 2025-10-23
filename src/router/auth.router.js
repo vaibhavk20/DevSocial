@@ -22,7 +22,16 @@ authRouter.post("/signup", async (req, res) => {
             emailId,
             password: passwordHash,
         }).save();
-        res.status(201).json({ message: "User created" }, user);
+
+        // offload token generation to user model
+        const token = await user.getJWT();
+        console.log(token);
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            expires: new Date(Date.now() + 8 * 3600000),
+        });
+        res.status(200).json({ message: "User created", user });
     } catch (error) {
         console.log(error);
         return res
@@ -57,6 +66,7 @@ authRouter.post("/login", async (req, res) => {
         console.log(token);
 
         res.cookie("token", token, {
+            httpOnly: true,
             expires: new Date(Date.now() + 8 * 3600000),
         });
 

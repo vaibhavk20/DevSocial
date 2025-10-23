@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+var cors = require("cors");
 
 const connectDB = require("./config/db");
 
@@ -15,11 +16,18 @@ const { profileRouter } = require("./router/profile.router");
 const { requestRouter } = require("./router/request.router");
 const { userRouter } = require("./router/user.router");
 
+app.use(
+    cors({
+        origin: "http://localhost:5173",
+        credentials: true,
+    })
+);
+
 app.use(express.json()); // Middleware to parse JSON bodies to JS objects
 app.use(cookieParser());
 
 app.use("/", authRouter);
-app.use("/user", profileRouter);
+app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
 
