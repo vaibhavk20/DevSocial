@@ -4,6 +4,7 @@ const authRouter = Router;
 const validateSignupData = require("../utils/validation").validateSignupData;
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
+const { sendAppEmail } = require("../services/emailService");
 
 authRouter.post("/signup", async (req, res) => {
     try {
@@ -31,6 +32,14 @@ authRouter.post("/signup", async (req, res) => {
             httpOnly: true,
             expires: new Date(Date.now() + 8 * 3600000),
         });
+
+        // await sendAppEmail(
+        //     "vaibhav.2071998@gmail.com",
+        //     "Welcome to thesocialdev.in!",
+        //     "<h1>Thank you for registering!</h1>", // HTML body
+        //     "Thank you for registering!" // Plain text body
+        // );
+
         res.status(200).json({ message: "User created", user });
     } catch (error) {
         console.log(error);

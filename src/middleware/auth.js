@@ -10,7 +10,7 @@ const userAuth = async (req, res, next) => {
                 .status(401)
                 .json({ message: "Unauthorized please login." });
         }
-        const decoded = jwt.verify(token, "vabhavkale"); // ;
+        const decoded = jwt.verify(token, process.env.JWT_SECRET); // ;
 
         // console.log(decoded);
         // req.user = decoded;

@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 var cors = require("cors");
+require("dotenv").config();
 
 const connectDB = require("./config/db");
 
@@ -31,20 +32,10 @@ app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
 
-// app.get("/feed", async (req, res) => {
-//     try {
-//         const users = await User.find({});
-//         res.status(200).json({ message: "Users fetched", data: users });
-//     } catch (error) {
-//         console.log(error);
-//         return res.status(500).json({ message: "Server error" });
-//     }
-// });
-
 connectDB()
     .then(() => {
         console.log("DB connected");
-        app.listen(3000, () => {
+        app.listen(process.env.PORT, () => {
             console.log("server started: 3000");
         });
     })
